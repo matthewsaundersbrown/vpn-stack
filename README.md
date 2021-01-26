@@ -20,7 +20,7 @@ mv wg-*.sh /usr/local/sbin/
 
 Download and install client software from [wireguard.com](https://www.wireguard.com/install/).
 
-Add a client configuration to the server and display a qr code that can be scanned by a client. If the
+Add a client configuration to the server and display a qr code that can be scanned by a client.
 
 ```bash
 wg-client-add.sh username [device]
