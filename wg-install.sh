@@ -39,6 +39,8 @@ if [ -d /etc/dnsmasq.d ]; then
   exit 1
 fi
 
+# check for / set hostname
+
 # assumes a single IP on a /24 subnet is provisioned on the server
 # you can change this to fit your network, or just set to a specific IP
 # used by wireguard for vpn connections & stubby for DNS queries
@@ -120,6 +122,14 @@ wget --output-document=/usr/local/etc/hosts https://raw.githubusercontent.com/St
 # dnsmasq will use adware + malware hosts file
 # and listen on wireguard server private lan IP
 # can be used by clients for adblocking
+
+# create temporary policy-rc.d to stop dnsmasq from starting during install
+# otherwise dnsmasq will fail to start due to ports in use and will show
+# errors. not really a problem as later config resoves this, but the errors
+# may cause concer for users running the install
+install -m 755 /dev/null /usr/sbin/policy-rc.d
+echo '#!/bin/sh' > /usr/sbin/policy-rc.d
+echo 'exit 101' >> /usr/sbin/policy-rc.d
 apt -y install dnsmasq
 echo "domain-needed" > /etc/dnsmasq.d/local.conf
 echo "bogus-priv" >> /etc/dnsmasq.d/local.conf
@@ -134,6 +144,8 @@ echo "no-negcache" >> /etc/dnsmasq.d/local.conf
 echo "listen-address=10.96.0.1" >> /etc/dnsmasq.d/local.conf
 echo "no-dhcp-interface=10.96.0.1" >> /etc/dnsmasq.d/local.conf
 echo "bind-interfaces" >> /etc/dnsmasq.d/local.conf
+# remove temporary policy-rc.d
+rm -f /usr/sbin/policy-rc.d
 systemctl restart dnsmasq.service
 
 # install and configure ufw firewall
@@ -166,7 +178,7 @@ echo >> /etc/ufw/before.rules
 echo "# End each table with the 'COMMIT' line or these rules won't be processed" >> /etc/ufw/before.rules
 echo "COMMIT" >> /etc/ufw/before.rules
 
-ufw enable
+ufw --force enable
 
 # install & configure wireguard
 apt -y install net-tools wireguard wireguard-tools qrencode
