@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# wireguard-stack
+# vpn-stack
 # A set of bash scripts for installing and managing a WireGuard VPN server.
-# https://git.stack-source.com/msb/wireguard-stack
+# https://git.stack-source.com/msb/vpn-stack
 # MIT License Copyright (c) 2021 Matthew Saunders Brown
 #
 # wg-peer-audit.sh
