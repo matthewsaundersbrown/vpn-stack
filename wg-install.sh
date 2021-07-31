@@ -126,7 +126,7 @@ wget --output-document=/usr/local/etc/hosts https://raw.githubusercontent.com/St
 # create temporary policy-rc.d to stop dnsmasq from starting during install
 # otherwise dnsmasq will fail to start due to ports in use and will show
 # errors. not really a problem as later config resoves this, but the errors
-# may cause concer for users running the install
+# may cause concern for users running the install
 install -m 755 /dev/null /usr/sbin/policy-rc.d
 echo '#!/bin/sh' > /usr/sbin/policy-rc.d
 echo 'exit 101' >> /usr/sbin/policy-rc.d
