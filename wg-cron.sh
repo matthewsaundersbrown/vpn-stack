@@ -3,7 +3,8 @@
 # vpn-stack
 # A set of bash scripts for installing and managing a WireGuard VPN server.
 # https://git.stack-source.com/msb/vpn-stack
-# MIT License Copyright (c) 2021 Matthew Saunders Brown
+# Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
 # wg-cron.sh
 # check for peers (clients) with connections older that two minutes
