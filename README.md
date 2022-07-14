@@ -8,12 +8,10 @@ Start with basic Ubuntu 20.04 install with no extra services or packages install
 
 ```bash
 cd /usr/local/src/
-wget https://git.stack-source.com/stackaas/stack-vpn/archive/master.tar.gz
+wget https://git.stack-source.com/msb/vpn-stack/archive/master.tar.gz
 tar zxvf master.tar.gz
-cd stack-vpn
-chmod 750 wg-*.sh
-mv wg-*.sh /usr/local/sbin/
-/usr/local/sbin/wg-install.sh
+cd vpn-stack
+bash install.sh
 ```
 
 ## Configure Clients
@@ -27,7 +25,7 @@ wg-client-add.sh username [device]
 wg-client-qr-display.sh username [device]
 ```
 
-If the device option is left off then a "default" device will be added for that client/username.
+If the device option is left off then a "default" device will be added for that client/username.\
 For example, to add a client config for a user named joe and display the qr code on the console screen run:
 
 ```bash

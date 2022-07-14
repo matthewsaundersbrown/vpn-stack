@@ -20,8 +20,8 @@ fi
 # do some basic pre-install checks - these are *not* exhaustive
 os_id=`lsb_release -is`
 os_release=`lsb_release -rs`
-if [ $os_id != Ubuntu ] || [ $os_release != 20.04 ]; then
-  echo "this installer only runs on Ubuntu 20.04, bailing out"
+if [ $os_id != Ubuntu ] || [ $os_release != 22.04 ]; then
+  echo "this installer only runs on Ubuntu 22.04, bailing out"
   exit 1
 fi
 
@@ -64,22 +64,21 @@ echo "net.ipv6.ip_nonlocal_bind = 1" >> /etc/sysctl.d/60-wireguard.conf
 /sbin/sysctl --system
 
 # DNS over TLS (DoT) for OS
-sed -i 's|#DNS=|DNS=1.1.1.1#one.one.one.one|g' /etc/systemd/resolved.conf
-sed -i 's|#FallbackDNS=|FallbackDNS=1.0.0.1#one.one.one.one|g' /etc/systemd/resolved.conf
+sed -i 's|#DNS=|DNS=1.1.1.1|g' /etc/systemd/resolved.conf
+sed -i 's|#FallbackDNS=|FallbackDNS=1.0.0.1|g' /etc/systemd/resolved.conf
 sed -i "s|#Domains=|Domains=`hostname -d`|g" /etc/systemd/resolved.conf
 sed -i 's|#DNSOverTLS=no|DNSOverTLS=yes|g' /etc/systemd/resolved.conf
-sed -i 's|#Cache=yes|Cache=no|g' /etc/systemd/resolved.conf
+sed -i 's|#Cache=.*|Cache=no|g' /etc/systemd/resolved.conf
 systemctl restart systemd-resolved
 
 # configure a minimal smtp server so automated emails (cron etc) can be sent
-apt -y install exim4-daemon-light mailutils
+DEBIAN_FRONTEND=noninteractive apt-get -y install exim4-daemon-light mailutils
 sed -i "s|dc_eximconfig_configtype='local'|dc_eximconfig_configtype='internet'|g" /etc/exim4/update-exim4.conf.conf
 /usr/sbin/update-exim4.conf
 systemctl restart exim4
 
 # configure automatic updates
-apt -y install --no-install-recommends mailutils
-apt -y install unattended-upgrades
+DEBIAN_FRONTEND=noninteractive apt-get -y install unattended-upgrades
 sed -i 's|APT::Periodic::Download-Upgradeable-Packages "0";|APT::Periodic::Download-Upgradeable-Packages "1";|g' /etc/apt/apt.conf.d/10periodic
 sed -i 's|APT::Periodic::AutocleanInterval "0";|APT::Periodic::AutocleanInterval "7";|g' /etc/apt/apt.conf.d/10periodic
 echo 'APT::Periodic::Unattended-Upgrade "1";' >> /etc/apt/apt.conf.d/10periodic
@@ -92,7 +91,7 @@ REBOOT_TIME=$(printf "%02d" $((8 + RANDOM % 2))):$(printf "%02d" $((0 + RANDOM %
 sed -i "s|//Unattended-Upgrade::Automatic-Reboot-Time \"02:00\";|Unattended-Upgrade::Automatic-Reboot-Time \"$REBOOT_TIME\";|g" /etc/apt/apt.conf.d/50unattended-upgrades
 
 # stubby DNS Privacy stub resolver for wireguard clients
-apt -y install stubby
+DEBIAN_FRONTEND=noninteractive apt-get -y install stubby
 cp /etc/stubby/stubby.yml /etc/stubby/stubby.yml.default
 echo 'resolution_type: GETDNS_RESOLUTION_STUB' > /etc/stubby/stubby.yml
 echo 'dns_transport_list:' >> /etc/stubby/stubby.yml
@@ -131,7 +130,7 @@ wget --output-document=/usr/local/etc/hosts https://raw.githubusercontent.com/St
 install -m 755 /dev/null /usr/sbin/policy-rc.d
 echo '#!/bin/sh' > /usr/sbin/policy-rc.d
 echo 'exit 101' >> /usr/sbin/policy-rc.d
-apt -y install dnsmasq
+DEBIAN_FRONTEND=noninteractive apt-get -y install dnsmasq
 echo "domain-needed" > /etc/dnsmasq.d/local.conf
 echo "bogus-priv" >> /etc/dnsmasq.d/local.conf
 echo "no-resolv" >> /etc/dnsmasq.d/local.conf
@@ -150,7 +149,7 @@ rm -f /usr/sbin/policy-rc.d
 systemctl restart dnsmasq.service
 
 # install and configure ufw firewall
-apt -y install ufw
+DEBIAN_FRONTEND=noninteractive apt-get -y install ufw
 # enable wireguard port
 ufw allow from any to $IPv4 port 51820 proto udp
 # allow dns queries for wireguard clients
@@ -182,7 +181,7 @@ echo "COMMIT" >> /etc/ufw/before.rules
 ufw --force enable
 
 # install & configure wireguard
-apt -y install net-tools wireguard wireguard-tools qrencode
+DEBIAN_FRONTEND=noninteractive apt-get -y install net-tools wireguard wireguard-tools qrencode
 
 # this will be the private network used by wireguard server & clients
 # Network:   10.96.0.0/12
