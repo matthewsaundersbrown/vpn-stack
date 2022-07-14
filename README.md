@@ -4,7 +4,7 @@ A set of bash scripts for installing and managing a WireGuard VPN server.
 
 ## Download & Install
 
-Start with basic Ubuntu 20.04 install with no extra services or packages installed.
+Start with basic Ubuntu 22.04 install with no extra services or packages installed.
 
 ```bash
 cd /usr/local/src/
@@ -12,6 +12,7 @@ wget https://git.stack-source.com/msb/vpn-stack/archive/master.tar.gz
 tar zxvf master.tar.gz
 cd vpn-stack
 bash install.sh
+reboot
 ```
 
 ## Configure Clients
