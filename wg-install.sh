@@ -79,9 +79,9 @@ systemctl restart exim4
 # configure automatic updates
 apt -y install --no-install-recommends mailutils
 apt -y install unattended-upgrades
-sed -i 's|APT::Periodic::Download-Upgradeable-Packages "0";|APT::Periodic::Download-Upgradeable-Packages "1";|g' /apt/apt.conf.d/10periodic
-sed -i 's|APT::Periodic::AutocleanInterval "0";|APT::Periodic::AutocleanInterval "7";|g' /apt/apt.conf.d/10periodic
-echo 'APT::Periodic::Unattended-Upgrade "1";' >> /apt/apt.conf.d/10periodic
+sed -i 's|APT::Periodic::Download-Upgradeable-Packages "0";|APT::Periodic::Download-Upgradeable-Packages "1";|g' /etc/apt/apt.conf.d/10periodic
+sed -i 's|APT::Periodic::AutocleanInterval "0";|APT::Periodic::AutocleanInterval "7";|g' /etc/apt/apt.conf.d/10periodic
+echo 'APT::Periodic::Unattended-Upgrade "1";' >> /etc/apt/apt.conf.d/10periodic
 sed -i 's|//     "${distro_id}:${distro_codename}-updates";|       "${distro_id}:${distro_codename}-updates";|g' /etc/apt/apt.conf.d/50unattended-upgrades
 sed -i 's|//Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";|Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";|g' /etc/apt/apt.conf.d/50unattended-upgrades
 sed -i 's|//Unattended-Upgrade::Remove-Unused-Dependencies "false";|Unattended-Upgrade::Remove-Unused-Dependencies "true";|g' /etc/apt/apt.conf.d/50unattended-upgrades
