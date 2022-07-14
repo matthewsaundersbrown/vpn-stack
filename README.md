@@ -40,5 +40,5 @@ wg-client-qr-display.sh joe
 Complete documentation that describes in detail the configuration of the WireGuard server coming next. In the meantime review the comments in wg-install.sh to see details.
 
 ## License
-Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>
+Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>\
 GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
