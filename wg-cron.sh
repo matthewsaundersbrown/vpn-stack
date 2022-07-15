@@ -30,7 +30,7 @@ if [ $clientCount -gt  0 ]; then
   do
     # remove peer from wireguard
     wg set wg0 peer ${clients[$i]} remove
-    config=$(grep ${clients[$i]} /etc/wireguard/peers/*.conf|cut -d : -f 1)
+    config=$(grep -l "PublicKey = ${clients[$i]}" /etc/wireguard/peers/*.conf)
     # add peer back to wireguard
     wg addconf wg0 $config
   done
