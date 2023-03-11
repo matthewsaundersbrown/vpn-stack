@@ -6,6 +6,25 @@
 # Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+# load include file
+source $(dirname $0)/wg.sh
+
+help()
+{
+  thisfilename=$(basename -- "$0")
+  echo "Add virtualhost to this server."
+  echo ""
+  echo "usage: $thisfilename -d <domain> -u <username> [-h]"
+  echo ""
+  echo "  -h            Print this help."
+  echo "  -d <domain>   Domain name to add as a VirtualHost. www. subdomain is automatically aliased."
+  echo "  -u <username> Username to install VirtualHost for. Username must already exist."
+  echo "                If need be run vhost-user-add.sh first."
+  echo "                Or use vhost-deploy.sh instead to automatically generate username."
+}
+
+vhost:getoptions "$@"
+
 # require root
 if [ "${EUID}" -ne 0 ]; then
   echo "This script must be run as root"
