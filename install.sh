@@ -6,9 +6,9 @@
 # Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# wireguard installer for Ubuntu 20.04
+# wireguard installer for Ubuntu 22.04
 #
-# this installer expects a clean Ubuntu 20.04 install with
+# this installer expects a clean Ubuntu 22.04 install with
 # wireguard, stubby & dnsmasq *not* previously installed
 
 # require root
@@ -42,10 +42,10 @@ fi
 
 # check for / set hostname
 
-# assumes a single IP on a /24 subnet is provisioned on the server
+# autodetection that should work on Ubuntu 22.04
 # you can change this to fit your network, or just set to a specific IP
 # used by wireguard for vpn connections & stubby for DNS queries
-IPv4=`ip -4 -o addr show | awk '{ print $4 }' | grep '/24$' | cut -d / -f 1`
+IPv4=`ip route get 1.1.1.1| head -n 1 | cut -d ' ' -f 7`
 
 # update system
 apt -y update
