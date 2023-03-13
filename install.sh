@@ -223,9 +223,13 @@ umask $UMASK
 systemctl enable wg-quick@wg0.service
 systemctl start wg-quick@wg0.service
 
+# install wg*.sh scripts in to /usr/local/sbin/
+cp wg*.sh /usr/local/sbin/
+chmod 755 /usr/local/sbin/wg*.sh
+
 # set up wireguard timer for wg-cron.sh
 # removes inactive peers (clients) endpoint (last connected IP) data from wireguard
-# /usr/lib/systemd/system/wg-cron.timer
+mkdir -p /usr/local/lib/systemd/system/
 echo '[Unit]' > /usr/lib/systemd/system/wg-cron.timer
 echo 'Description=wiregaurd cron every 5 minutes' >> /usr/lib/systemd/system/wg-cron.timer
 echo '' >> /usr/lib/systemd/system/wg-cron.timer
@@ -245,14 +249,22 @@ echo 'ExecStart=/usr/local/sbin/wg-cron.sh' >> /usr/lib/systemd/system/wg-cron.s
 echo '' >> /usr/lib/systemd/system/wg-cron.service
 echo '[Install]' >> /usr/lib/systemd/system/wg-cron.service
 echo 'WantedBy=multi-user.target' >> /usr/lib/systemd/system/wg-cron.service
-# enable wg-cront.timer
+# enable wg-cron.timer
 systemctl daemon-reload
 systemctl enable wg-cron.timer
 systemctl start wg-cron.timer
 
-# install wg-*.sh scripts in to /usr/local/sbin/
-cp wg-*.sh /usr/local/sbin/
-chmod 755 /usr/local/sbin/wg-*.sh
+# install fail2ban. configure draconian ssh failure blocking
+DEBIAN_FRONTEND=noninteractive apt-get -y install fail2ban
+echo "[Definition]" > /etc/fail2ban/fail2ban.local
+echo "dbfile = :memory:" >> /etc/fail2ban/fail2ban.local
+echo "[DEFAULT]" > /etc/fail2ban/jail.local
+echo "ignoreip = 127.0.0.1/8" >> /etc/fail2ban/jail.local
+echo "banaction = ufw" >> /etc/fail2ban/jail.local
+echo "bantime = 24h" >> /etc/fail2ban/jail.d/defaults-debian.conf
+echo "maxretry = 1" >> /etc/fail2ban/jail.d/defaults-debian.conf
+systemctl enable fail2ban
+systemctl start fail2ban
 
 # display installation confirmation message
 echo "WireGuard is now installed and configured and running."

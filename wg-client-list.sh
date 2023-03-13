@@ -9,11 +9,8 @@
 # wg-client-list.sh
 # list all client configs available on the server
 
-# require root
-if [ "${EUID}" -ne 0 ]; then
-  echo "This script must be run as root"
-  exit 1
-fi
+# load include file
+source $(dirname $0)/wg.sh
 
 # prints a table with username & device split in to columns
-(echo "Client.Config" && echo "--------.------" && cd /etc/wireguard/clients/ && ls -1 *.conf)|sed 's|\.conf$||g'|sed 's|\.| |g'|column -t
+(echo "Client" && echo "---------------" && cd /etc/wireguard/clients/ && ls -1 *.conf)|sed 's|\.conf$||g'

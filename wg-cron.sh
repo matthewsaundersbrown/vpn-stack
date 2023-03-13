@@ -11,11 +11,8 @@
 # remove them then add them back to wireguard
 # this removes the endpoint (last connected IP) and transfer stats
 
-# require root
-if [ "${EUID}" -ne 0 ]; then
-  echo "This script must be run as root"
-  exit 1
-fi
+# load include file
+source $(dirname $0)/wg.sh
 
 # get peer of clients with "minutes" in their last handshake
 clients=($(wg|grep -B 4 minutes|grep peer|cut -d ' ' -f 2))

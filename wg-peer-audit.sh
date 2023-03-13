@@ -11,11 +11,8 @@
 # this is basis of a "cleanup" script to remove configs for invalid
 # old or deleted clients
 
-# require root
-if [ "${EUID}" -ne 0 ]; then
-  echo "This script must be run as root"
-  exit 1
-fi
+# load include file
+source $(dirname $0)/wg.sh
 
 # get all peers in running wireguard server
 peers=($(wg|grep peer|cut -d ' ' -f 2))

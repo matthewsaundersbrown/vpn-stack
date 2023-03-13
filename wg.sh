@@ -15,21 +15,6 @@ fi
 
 # functions
 
-function vhost::set-virtualhostArray () {
-
-  cd /srv/www
-  virtualhostArray=(`ls -1|grep -v ^html$`)
-
-}
-
-function vhost::set-phpVersion () {
-
-  PHP_MAJOR_VERSION=`php -r "echo PHP_MAJOR_VERSION;"`
-  PHP_MINOR_VERSION=`php -r "echo PHP_MINOR_VERSION;"`
-  phpVersion=$PHP_MAJOR_VERSION.$PHP_MINOR_VERSION
-
-}
-
 # crude but good enough domain name format validation
 function wg::validate_domain () {
   local my_domain=$1
@@ -40,28 +25,16 @@ function wg::validate_domain () {
   fi
 }
 
--c client
--g config
--e email
--p peer ???
-
-function wg:getoptions () {
+function wg::getoptions () {
   local OPTIND
-  while getopts "cd:i:m:o:p:u:jhnvw" opt ; do
+  while getopts "c:e:h" opt ; do
     case "${opt}" in
         h ) # display help and exit
           help
           exit
           ;;
-        c ) # cvs - output in cvs format
-          cvs=true
-          ;;
-        d ) # domain name (virtualhost) to act on
-          domain=${OPTARG,,}
-          if ! wg::validate_domain $domain; then
-            echo "ERROR: $domain is not a valid domain name."
-            exit
-          fi
+        c ) # client/config name
+          client=${OPTARG,,}
           ;;
         e ) # email address
           email=${OPTARG,,}
@@ -83,34 +56,6 @@ function wg:getoptions () {
             exit 1
           fi
           ;;
-        i ) # User ID (UID) for new user
-          uid=${OPTARG}
-          ;;
-        m ) # macro - Apache mod_macro name
-          macro=${OPTARG}
-          ;;
-        o ) # option - usually applied to previously specified variable
-            # e.g. could be subdomain or alias depending on the macro defined
-          option=${OPTARG}
-          ;;
-        p ) # password
-          password=${OPTARG}
-          ;;
-        u ) # username
-          username=${OPTARG,,}
-          ;;
-        j ) # jail - if enabled user will be jailed
-          jail=true
-          ;;
-        n ) # dry-run
-          dryrun=true
-          ;;
-        v ) # verbose
-          verbose=true
-          ;;
-        w ) # write - store data in file
-          write=true
-          ;;
         \? )
           echo "Invalid option: $OPTARG"
           exit 1
@@ -124,7 +69,3 @@ function wg:getoptions () {
   shift $((OPTIND-1))
 }
 
-# check for local config, which can be used to override any of the above
-if [[ -f /usr/local/etc/wg.conf ]]; then
-  source /usr/local/etc/wg.conf
-fi
